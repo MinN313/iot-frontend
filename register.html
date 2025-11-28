@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - IoT Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <!-- Logo -->
+            <div class="logo">🏠</div>
+            <h1>Tạo Tài Khoản</h1>
+            <p class="subtitle">Đăng ký để sử dụng hệ thống IoT</p>
+            
+            <!-- Thông báo lỗi/thành công -->
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            
+            <!-- Form đăng ký -->
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label for="name">Họ và tên</label>
+                    <input type="text" id="name" placeholder="Nhập họ và tên" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu (ít nhất 6 ký tự)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                    <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Đăng Ký</button>
+            </form>
+            
+            <!-- Link đăng nhập -->
+            <p class="auth-link">
+                Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Load JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

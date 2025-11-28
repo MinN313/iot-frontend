@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - IoT Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <!-- Logo -->
+            <div class="logo">🏠</div>
+            <h1>IoT Platform</h1>
+            <p class="subtitle">Đăng nhập để quản lý hệ thống</p>
+            
+            <!-- Thông báo lỗi/thành công -->
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            
+            <!-- Form đăng nhập -->
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+            </form>
+            
+            <!-- Link đăng ký -->
+            <p class="auth-link">
+                Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Load JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

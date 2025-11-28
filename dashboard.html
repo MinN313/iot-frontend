@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IoT Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo">🏠</span>
+                <h2>IoT Platform</h2>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#cameras" class="nav-link">
+                        <i>📷</i>
+                        <span>Camera</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#sensors" class="nav-link">
+                        <i>🌡️</i>
+                        <span>Cảm biến</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#devices" class="nav-link">
+                        <i>💡</i>
+                        <span>Thiết bị</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#alerts" class="nav-link">
+                        <i>🔔</i>
+                        <span>Cảnh báo</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>📊 Dashboard</h1>
+                <div class="user-info">
+                    <span>Xin chào, <strong id="user-name">User</strong></span>
+                    <span class="user-role" id="user-role">user</span>
+                    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">📱</div>
+                    <div class="stat-info">
+                        <h3 id="total-devices">0</h3>
+                        <p>Tổng thiết bị</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon green">✅</div>
+                    <div class="stat-info">
+                        <h3 id="online-devices">0</h3>
+                        <p>Đang hoạt động</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orange">📷</div>
+                    <div class="stat-info">
+                        <h3 id="total-cameras">0</h3>
+                        <p>Camera</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon red">🔔</div>
+                    <div class="stat-info">
+                        <h3 id="unread-alerts">0</h3>
+                        <p>Cảnh báo mới</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sensor Data -->
+            <div class="section" id="sensors">
+                <div class="section-header">
+                    <h2>🌡️ Dữ liệu cảm biến</h2>
+                </div>
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <div class="sensor-icon">🌡️</div>
+                        <div class="sensor-value" id="temperature">--°C</div>
+                        <div class="sensor-label">Nhiệt độ</div>
+                    </div>
+                    
+                    <div class="sensor-card">
+                        <div class="sensor-icon">💧</div>
+                        <div class="sensor-value" id="humidity">--%</div>
+                        <div class="sensor-label">Độ ẩm</div>
+                    </div>
+                    
+                    <div class="sensor-card">
+                        <div class="sensor-icon">🚶</div>
+                        <div class="sensor-value" id="motion">--</div>
+                        <div class="sensor-label">Chuyển động</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cameras -->
+            <div class="section" id="cameras">
+                <div class="section-header">
+                    <h2>📷 Camera</h2>
+                </div>
+                <div class="camera-grid" id="camera-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Device Controls -->
+            <div class="section" id="devices">
+                <div class="section-header">
+                    <h2>💡 Điều khiển thiết bị</h2>
+                </div>
+                <div class="device-grid" id="device-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alerts -->
+            <div class="section" id="alerts">
+                <div class="section-header">
+                    <h2>🔔 Cảnh báo gần đây</h2>
+                </div>
+                <div class="alert-list" id="alert-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Load JavaScript -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
