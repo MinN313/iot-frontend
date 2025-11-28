@@ -86,6 +86,17 @@
             cursor: pointer;
             color: #aaa;
         }
+        .back-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .back-link:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -96,9 +107,7 @@
                 <p style="color: #aaa;">Chỉ Admin mới có quyền truy cập</p>
             </div>
             <div>
-                <a href="dashboard.html" class="btn btn-primary" style="padding: 10px 20px; text-decoration: none;">
-                    ← Dashboard
-                </a>
+                <a href="dashboard.html" class="back-link">← Dashboard</a>
                 <button onclick="logout()" class="btn-logout" style="margin-left: 10px;">Đăng xuất</button>
             </div>
         </div>
@@ -133,7 +142,7 @@
             <input type="hidden" id="editUserId">
             <div class="form-group">
                 <label>Chọn Role mới:</label>
-                <select id="newRole" style="width: 100%; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <select id="newRole" style="width: 100%; padding: 10px; border-radius: 8px; margin-top: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
                     <option value="user">User</option>
                     <option value="operator">Operator</option>
                     <option value="admin">Admin</option>
@@ -154,7 +163,7 @@
             <p id="resetUserEmail" style="color: #aaa; margin-bottom: 15px;"></p>
             <div class="form-group">
                 <label>Mật khẩu mới:</label>
-                <input type="text" id="newPassword" value="123456" style="width: 100%; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <input type="text" id="newPassword" value="123456" style="width: 100%; padding: 10px; border-radius: 8px; margin-top: 10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
             </div>
             <button onclick="saveResetPassword()" class="btn btn-primary" style="width: 100%; margin-top: 15px;">
                 Reset Mật Khẩu
