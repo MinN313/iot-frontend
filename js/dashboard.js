@@ -12,7 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Hiển thị thông tin user
     displayUserInfo();
+    function displayUserInfo() {
+    const user = getUser();
+    const userNameEl = document.getElementById('user-name');
+    const userRoleEl = document.getElementById('user-role');
     
+    if (user) {
+        if (userNameEl) userNameEl.textContent = user.name || user.email;
+        if (userRoleEl) userRoleEl.textContent = user.role;
+        
+        // Hiện menu Admin nếu là admin
+        if (user.role === 'admin') {
+            const adminMenu = document.getElementById('admin-menu');
+            if (adminMenu) adminMenu.style.display = 'block';
+        }
+    }
+}
     // Tải dữ liệu dashboard
     loadDashboard();
     
