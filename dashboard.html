@@ -5,14 +5,448 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - IoT Platform</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2), rgba(0, 242, 254, 0.2));
+            border-radius: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: #aaa;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .nav-link i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            color: #4facfe;
+            font-weight: 600;
+        }
+
+        .user-role {
+            background: rgba(79, 172, 254, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4facfe;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-logout:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .stat-icon.blue { background: rgba(79, 172, 254, 0.2); }
+        .stat-icon.green { background: rgba(46, 213, 115, 0.2); }
+        .stat-icon.orange { background: rgba(255, 165, 2, 0.2); }
+        .stat-icon.red { background: rgba(255, 71, 87, 0.2); }
+
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-info p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Section */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Sensor Cards */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .sensor-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .sensor-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .sensor-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .sensor-label {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Camera Grid */
+        .camera-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .camera-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .camera-preview {
+            height: 180px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #333;
+        }
+
+        .camera-info {
+            padding: 15px;
+        }
+
+        .camera-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .camera-location {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .camera-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.online { background: #2ed573; }
+        .status-dot.offline { background: #ff4757; }
+
+        /* Device Grid */
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .device-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .device-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .device-info p {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 56px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Alerts */
+        .alert-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .alert-icon {
+            font-size: 24px;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-message {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .alert-unread {
+            width: 10px;
+            height: 10px;
+            background: #4facfe;
+            border-radius: 50%;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 10px;
+            }
+
+            .logo-text, .nav-link span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- SIDEBAR -->
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <span class="logo">🏠</span>
-                <h2>IoT Platform</h2>
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">IoT Platform</span>
             </div>
             
             <ul class="nav-menu">
@@ -46,56 +480,31 @@
                         <span>Cảnh báo</span>
                     </a>
                 </li>
+                <li class="nav-item" id="admin-menu" style="display: none;">
+                    <a href="admin.html" class="nav-link">
+                        <i>👑</i>
+                        <span>Quản lý Users</span>
+                    </a>
+                </li>
             </ul>
         </aside>
-        <li class="nav-item">
-            <a href="#alerts" class="nav-link">
-                <i>🔔</i>
-                <span>Cảnh báo</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#alerts" class="nav-link">
-                <i>🔔</i>
-                <span>Cảnh báo</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#alerts" class="nav-link">
-                <i>🔔</i>
-                <span>Cảnh báo</span>
-            </a>
-        </li>
 
-        <!-- Menu Admin - chỉ hiện với admin -->
-        <li class="nav-item" id="admin-menu" style="display: none;">
-            <a href="admin.html" class="nav-link">
-                <i>👑</i>
-                <span>Quản lý Users</span>
-            </a>
-        </li>
-        
-        <!-- THÊM ĐOẠN NÀY (chỉ hiện với admin) -->
-        <li class="nav-item" id="admin-menu" style="display: none;">
-            <a href="admin.html" class="nav-link">
-                <i>👑</i>
-                <span>Quản lý Users</span>
-            </a>
-        </li>
-
-        <!-- MAIN CONTENT -->
+        <!-- Main Content -->
         <main class="main-content">
             <!-- Header -->
-            <div class="header">
-                <h1>📊 Dashboard</h1>
+            <header class="header">
+                <h1 class="page-title">
+                    <span>📊</span>
+                    Dashboard
+                </h1>
                 <div class="user-info">
-                    <span>Xin chào, <strong id="user-name">User</strong></span>
+                    <span>Xin chào, <strong class="user-name" id="user-name">User</strong></span>
                     <span class="user-role" id="user-role">user</span>
                     <button class="btn-logout" onclick="logout()">Đăng xuất</button>
                 </div>
-            </div>
-            
-            <!-- Stats Cards -->
+            </header>
+
+            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon blue">📱</div>
@@ -104,7 +513,6 @@
                         <p>Tổng thiết bị</p>
                     </div>
                 </div>
-                
                 <div class="stat-card">
                     <div class="stat-icon green">✅</div>
                     <div class="stat-info">
@@ -112,7 +520,6 @@
                         <p>Đang hoạt động</p>
                     </div>
                 </div>
-                
                 <div class="stat-card">
                     <div class="stat-icon orange">📷</div>
                     <div class="stat-info">
@@ -120,7 +527,6 @@
                         <p>Camera</p>
                     </div>
                 </div>
-                
                 <div class="stat-card">
                     <div class="stat-icon red">🔔</div>
                     <div class="stat-info">
@@ -129,74 +535,281 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Sensor Data -->
-            <div class="section" id="sensors">
-                <div class="section-header">
-                    <h2>🌡️ Dữ liệu cảm biến</h2>
-                </div>
+
+            <!-- Sensors Section -->
+            <section class="section" id="sensors">
+                <h2 class="section-title">
+                    <span>🌡️</span>
+                    Dữ liệu cảm biến
+                </h2>
                 <div class="sensor-grid">
                     <div class="sensor-card">
                         <div class="sensor-icon">🌡️</div>
                         <div class="sensor-value" id="temperature">--°C</div>
                         <div class="sensor-label">Nhiệt độ</div>
                     </div>
-                    
                     <div class="sensor-card">
                         <div class="sensor-icon">💧</div>
                         <div class="sensor-value" id="humidity">--%</div>
                         <div class="sensor-label">Độ ẩm</div>
                     </div>
-                    
                     <div class="sensor-card">
-                        <div class="sensor-icon">🚶</div>
+                        <div class="sensor-icon">🏃</div>
                         <div class="sensor-value" id="motion">--</div>
                         <div class="sensor-label">Chuyển động</div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Cameras -->
-            <div class="section" id="cameras">
-                <div class="section-header">
-                    <h2>📷 Camera</h2>
-                </div>
+            </section>
+
+            <!-- Cameras Section -->
+            <section class="section" id="cameras">
+                <h2 class="section-title">
+                    <span>📷</span>
+                    Camera
+                </h2>
                 <div class="camera-grid" id="camera-grid">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                    </div>
+                    <!-- Camera cards will be loaded here -->
                 </div>
-            </div>
-            
-            <!-- Device Controls -->
-            <div class="section" id="devices">
-                <div class="section-header">
-                    <h2>💡 Điều khiển thiết bị</h2>
-                </div>
+            </section>
+
+            <!-- Devices Section -->
+            <section class="section" id="devices">
+                <h2 class="section-title">
+                    <span>💡</span>
+                    Điều khiển thiết bị
+                </h2>
                 <div class="device-grid" id="device-grid">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                    </div>
+                    <!-- Device cards will be loaded here -->
                 </div>
-            </div>
-            
-            <!-- Alerts -->
-            <div class="section" id="alerts">
-                <div class="section-header">
-                    <h2>🔔 Cảnh báo gần đây</h2>
-                </div>
+            </section>
+
+            <!-- Alerts Section -->
+            <section class="section" id="alerts">
+                <h2 class="section-title">
+                    <span>🔔</span>
+                    Cảnh báo gần đây
+                </h2>
                 <div class="alert-list" id="alert-list">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                    </div>
+                    <!-- Alerts will be loaded here -->
                 </div>
-            </div>
+            </section>
         </main>
     </div>
-    
-    <!-- Load JavaScript -->
+
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script>
+        // Kiểm tra đăng nhập
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            displayUserInfo();
+            loadDashboard();
+            
+            // Auto refresh mỗi 30 giây
+            setInterval(loadDashboard, 30000);
+        });
+
+        function displayUserInfo() {
+            const user = getUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.name || user.email;
+                document.getElementById('user-role').textContent = user.role;
+                
+                // Hiện menu Admin nếu là admin
+                if (user.role === 'admin') {
+                    document.getElementById('admin-menu').style.display = 'block';
+                }
+            }
+        }
+
+        async function loadDashboard() {
+            await Promise.all([
+                loadStats(),
+                loadSensorData(),
+                loadCameras(),
+                loadDevices(),
+                loadAlerts()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('total-devices').textContent = data.data.total_devices || 0;
+                    document.getElementById('online-devices').textContent = data.data.online_devices || 0;
+                    document.getElementById('total-cameras').textContent = data.data.total_cameras || 0;
+                    document.getElementById('unread-alerts').textContent = data.data.unread_alerts || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadSensorData() {
+            try {
+                const response = await fetch(`${API_URL}/api/sensors`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    document.getElementById('temperature').textContent = (data.data.temperature || 0).toFixed(1) + '°C';
+                    document.getElementById('humidity').textContent = (data.data.humidity || 0) + '%';
+                    document.getElementById('motion').textContent = data.data.motion ? 'Có' : 'Không';
+                }
+            } catch (error) {
+                console.error('Error loading sensor data:', error);
+            }
+        }
+
+        async function loadCameras() {
+            try {
+                const response = await fetch(`${API_URL}/api/cameras`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                
+                const grid = document.getElementById('camera-grid');
+                
+                if (data.success && data.data.length > 0) {
+                    grid.innerHTML = data.data.map(camera => `
+                        <div class="camera-card">
+                            <div class="camera-preview">📷</div>
+                            <div class="camera-info">
+                                <div class="camera-name">${camera.name}</div>
+                                <div class="camera-location">📍 ${camera.location || 'Chưa đặt'}</div>
+                                <div class="camera-status">
+                                    <span class="status-dot ${camera.status}"></span>
+                                    ${camera.status === 'online' ? 'Đang hoạt động' : 'Offline'}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div class="empty-state">Chưa có camera nào</div>';
+                }
+            } catch (error) {
+                console.error('Error loading cameras:', error);
+            }
+        }
+
+        async function loadDevices() {
+            try {
+                const response = await fetch(`${API_URL}/api/devices`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                
+                const grid = document.getElementById('device-grid');
+                
+                if (data.success && data.data.length > 0) {
+                    // Lọc chỉ lấy thiết bị điều khiển được (led, relay)
+                    const controllableDevices = data.data.filter(d => 
+                        d.type === 'led' || d.type === 'relay'
+                    );
+                    
+                    if (controllableDevices.length > 0) {
+                        grid.innerHTML = controllableDevices.map(device => `
+                            <div class="device-card">
+                                <div class="device-info">
+                                    <h4>${device.type === 'led' ? '💡' : '🔌'} ${device.name}</h4>
+                                    <p>📍 ${device.location || 'Chưa đặt'}</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" 
+                                           ${device.status === 'online' ? 'checked' : ''} 
+                                           onchange="controlDevice('${device.device_id}', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        `).join('');
+                    } else {
+                        grid.innerHTML = '<div class="empty-state">Chưa có thiết bị điều khiển</div>';
+                    }
+                } else {
+                    grid.innerHTML = '<div class="empty-state">Chưa có thiết bị nào</div>';
+                }
+            } catch (error) {
+                console.error('Error loading devices:', error);
+            }
+        }
+
+        async function controlDevice(deviceId, isOn) {
+            try {
+                const response = await fetch(`${API_URL}/api/devices/${deviceId}/control`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ action: isOn ? 'on' : 'off' })
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    alert('Lỗi: ' + data.error);
+                    // Reload để reset trạng thái
+                    loadDevices();
+                }
+            } catch (error) {
+                console.error('Error controlling device:', error);
+                alert('Không thể điều khiển thiết bị!');
+            }
+        }
+
+        async function loadAlerts() {
+            try {
+                const response = await fetch(`${API_URL}/api/alerts`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const data = await response.json();
+                
+                const list = document.getElementById('alert-list');
+                
+                if (data.success && data.data.length > 0) {
+                    list.innerHTML = data.data.slice(0, 10).map(alert => `
+                        <div class="alert-item">
+                            <span class="alert-icon">
+                                ${getAlertIcon(alert.alert_type)}
+                            </span>
+                            <div class="alert-content">
+                                <div class="alert-message">${alert.message}</div>
+                                <div class="alert-time">${formatTime(alert.created_at)}</div>
+                            </div>
+                            ${!alert.is_read ? '<span class="alert-unread"></span>' : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<div class="empty-state">Không có cảnh báo nào</div>';
+                }
+            } catch (error) {
+                console.error('Error loading alerts:', error);
+            }
+        }
+
+        function getAlertIcon(type) {
+            const icons = {
+                'temperature': '🌡️',
+                'humidity': '💧',
+                'motion': '🏃',
+                'security': '🚨',
+                'device': '📱',
+                'default': '⚠️'
+            };
+            return icons[type] || icons['default'];
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            return date.toLocaleString('vi-VN');
+        }
+    </script>
 </body>
 </html>
