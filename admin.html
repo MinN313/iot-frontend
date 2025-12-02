@@ -47,7 +47,8 @@
             <!-- Header -->
             <header class="header">
                 <div class="header-left">
-                    <h1>👑 Quản lý Users</h1>
+                    <h1>👑 Admin</h1>
+                    <span id="reset-badge" style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px; display: none;">0 yêu cầu reset</span>
                 </div>
                 <div class="header-right">
                     <div class="user-info">
@@ -57,8 +58,15 @@
                 </div>
             </header>
             
-            <!-- Table -->
-            <div class="table-container">
+            <!-- Tabs -->
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="showTab('users')" id="tab-users">👥 Quản lý Users</button>
+                <button class="btn btn-secondary" onclick="showTab('resets')" id="tab-resets">🔑 Yêu cầu Reset (<span id="reset-count">0</span>)</button>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="table-container" id="users-section">
+                <h3 style="margin-bottom: 15px;">👥 Danh sách Users</h3>
                 <table>
                     <thead>
                         <tr>
@@ -71,6 +79,28 @@
                         </tr>
                     </thead>
                     <tbody id="users-tbody">
+                        <tr>
+                            <td colspan="6" class="text-center">Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Reset Requests Table -->
+            <div class="table-container" id="resets-section" style="display: none;">
+                <h3 style="margin-bottom: 15px;">🔑 Yêu cầu Reset Mật khẩu</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Tên</th>
+                            <th>Trạng thái</th>
+                            <th>Thời gian</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resets-tbody">
                         <tr>
                             <td colspan="6" class="text-center">Đang tải...</td>
                         </tr>
@@ -110,12 +140,29 @@
             
             displayUserInfo();
             loadUsers();
+            loadResetRequests();
         });
         
         function displayUserInfo() {
             const user = getCurrentUser();
             if (user) {
                 document.getElementById('user-name').textContent = user.name || user.email;
+            }
+        }
+        
+        // ==================== TABS ====================
+        function showTab(tab) {
+            if (tab === 'users') {
+                document.getElementById('users-section').style.display = 'block';
+                document.getElementById('resets-section').style.display = 'none';
+                document.getElementById('tab-users').className = 'btn btn-primary';
+                document.getElementById('tab-resets').className = 'btn btn-secondary';
+            } else {
+                document.getElementById('users-section').style.display = 'none';
+                document.getElementById('resets-section').style.display = 'block';
+                document.getElementById('tab-users').className = 'btn btn-secondary';
+                document.getElementById('tab-resets').className = 'btn btn-primary';
+                loadResetRequests();
             }
         }
         
@@ -229,6 +276,106 @@
             } catch (error) {
                 showError('Lỗi kết nối!');
             }
+        }
+        
+        // ==================== RESET REQUESTS ====================
+        async function loadResetRequests() {
+            try {
+                const data = await apiCall('/api/admin/reset-requests');
+                if (data && data.success) {
+                    displayResetRequests(data.data);
+                }
+                
+                // Load count
+                const countData = await apiCall('/api/admin/reset-requests/count');
+                if (countData && countData.success) {
+                    document.getElementById('reset-count').textContent = countData.count;
+                    const badge = document.getElementById('reset-badge');
+                    if (countData.count > 0) {
+                        badge.textContent = countData.count + ' yêu cầu mới';
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Load reset requests error:', error);
+            }
+        }
+        
+        function displayResetRequests(requests) {
+            const tbody = document.getElementById('resets-tbody');
+            
+            if (!requests || requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có yêu cầu nào</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            requests.forEach(req => {
+                const tr = document.createElement('tr');
+                const isPending = req.status === 'pending';
+                tr.innerHTML = `
+                    <td>${req.id}</td>
+                    <td>${req.email}</td>
+                    <td>${req.user_name || '-'}</td>
+                    <td>
+                        <span class="badge ${isPending ? 'badge-admin' : 'badge-user'}">
+                            ${isPending ? '⏳ Chờ xử lý' : '✅ Đã xử lý'}
+                        </span>
+                    </td>
+                    <td>${new Date(req.created_at).toLocaleString('vi-VN')}</td>
+                    <td>
+                        ${isPending ? `
+                            <button class="btn btn-sm btn-edit" onclick="handleResetRequest(${req.id}, '${req.email}')">
+                                🔑 Reset MK
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-sm btn-delete" onclick="deleteResetRequest(${req.id})">
+                            🗑️ Xóa
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        async function handleResetRequest(requestId, email) {
+            // Nhập mật khẩu mới
+            const newPassword = prompt('Nhập mật khẩu mới cho ' + email + ':', '123456');
+            if (!newPassword) return;
+            
+            // Lấy user ID từ email
+            const usersData = await apiCall('/api/admin/users');
+            if (!usersData || !usersData.success) return;
+            
+            const user = usersData.data.find(u => u.email === email);
+            if (!user) {
+                showError('Không tìm thấy user!');
+                return;
+            }
+            
+            // Reset password
+            const resetData = await apiCall(`/api/admin/users/${user.id}/reset-password`, 'POST', {
+                new_password: newPassword
+            });
+            
+            if (resetData && resetData.success) {
+                // Đánh dấu đã xử lý
+                await apiCall(`/api/admin/reset-requests/${requestId}/complete`, 'POST');
+                showSuccess(`Đã reset mật khẩu cho ${email} thành: ${newPassword}`);
+                loadResetRequests();
+            } else {
+                showError('Không thể reset mật khẩu!');
+            }
+        }
+        
+        async function deleteResetRequest(requestId) {
+            if (!confirm('Xóa yêu cầu này?')) return;
+            
+            await apiCall(`/api/admin/reset-requests/${requestId}`, 'DELETE');
+            loadResetRequests();
         }
         
         // ==================== HELPERS ====================
