@@ -177,12 +177,16 @@ async function editSlot(slotNumber) {
             document.getElementById('form-title').textContent = `Sửa Slot ${slotNumber}`;
             document.getElementById('editing-slot').value = slotNumber;
             
+            // Thêm option cho slot đang sửa vào dropdown
+            const selectEl = document.getElementById('slot-number');
+            selectEl.innerHTML = `<option value="${slot.slot_number}">Slot ${slot.slot_number}</option>`;
+            selectEl.value = slot.slot_number;
+            selectEl.disabled = true;
+            
             // Điền dữ liệu vào form
-            document.getElementById('slot-number').value = slot.slot_number;
-            document.getElementById('slot-number').disabled = true;
-            document.getElementById('slot-name').value = slot.name;
-            document.getElementById('slot-type').value = slot.type;
-            document.getElementById('slot-icon').value = slot.icon;
+            document.getElementById('slot-name').value = slot.name || '';
+            document.getElementById('slot-type').value = slot.type || 'value';
+            document.getElementById('slot-icon').value = slot.icon || '';
             document.getElementById('slot-unit').value = slot.unit || '';
             document.getElementById('slot-location').value = slot.location || '';
             document.getElementById('slot-threshold-min').value = slot.threshold_min || '';
