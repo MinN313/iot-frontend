@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IoT Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <h2>🏠 IoT</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="dashboard.html" class="active">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="slots.html">
+                        <span class="icon">📱</span>
+                        <span>Quản lý Slots</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="alerts.html">
+                        <span class="icon">🔔</span>
+                        <span>Cảnh báo</span>
+                    </a>
+                </li>
+                <li id="admin-menu" style="display: none;">
+                    <a href="admin.html">
+                        <span class="icon">👑</span>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>📊 Dashboard</h1>
+                    <div id="mqtt-status"></div>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">User</div>
+                        <div class="user-role" id="user-role">Role</div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+                </div>
+            </header>
+            
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📱</div>
+                    <div class="stat-value" id="stat-total-slots">0</div>
+                    <div class="stat-label">Tổng Slots</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📷</div>
+                    <div class="stat-value" id="stat-cameras">0</div>
+                    <div class="stat-label">Camera</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💡</div>
+                    <div class="stat-value" id="stat-controls">0</div>
+                    <div class="stat-label">Điều khiển</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔔</div>
+                    <div class="stat-value" id="stat-alerts">0</div>
+                    <div class="stat-label">Cảnh báo mới</div>
+                </div>
+            </div>
+            
+            <!-- Slots Container -->
+            <div id="slots-container">
+                <!-- Value Slots -->
+                <div class="section">
+                    <h2 class="section-title">📊 Cảm biến</h2>
+                    <div class="slots-grid" id="value-slots"></div>
+                </div>
+                
+                <!-- Status Slots -->
+                <div class="section">
+                    <h2 class="section-title">📡 Trạng thái</h2>
+                    <div class="slots-grid" id="status-slots"></div>
+                </div>
+                
+                <!-- Control Slots -->
+                <div class="section">
+                    <h2 class="section-title">💡 Điều khiển</h2>
+                    <div class="slots-grid" id="control-slots"></div>
+                </div>
+                
+                <!-- Camera Slots -->
+                <div class="section">
+                    <h2 class="section-title">📷 Camera</h2>
+                    <div class="slots-grid" id="camera-slots"></div>
+                </div>
+            </div>
+            
+            <!-- Alerts Section -->
+            <div class="section">
+                <h2 class="section-title">🔔 Cảnh báo gần đây</h2>
+                <div class="alerts-container" id="alerts-container"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

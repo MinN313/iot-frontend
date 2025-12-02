@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cảnh báo - IoT Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <h2>🏠 IoT</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="dashboard.html">
+                        <span class="icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="slots.html">
+                        <span class="icon">📱</span>
+                        <span>Quản lý Slots</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="alerts.html" class="active">
+                        <span class="icon">🔔</span>
+                        <span>Cảnh báo</span>
+                    </a>
+                </li>
+                <li id="admin-menu" style="display: none;">
+                    <a href="admin.html">
+                        <span class="icon">👑</span>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>🔔 Cảnh báo</h1>
+                    <span id="unread-count"></span>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-name" id="user-name">User</div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+                </div>
+            </header>
+            
+            <!-- Alerts List -->
+            <div class="table-container">
+                <div id="alerts-list">
+                    <p class="text-center">Đang tải...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            
+            displayUserInfo();
+            loadAlerts();
+            
+            // Refresh mỗi 10 giây
+            setInterval(loadAlerts, 10000);
+        });
+        
+        function displayUserInfo() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('user-name').textContent = user.name || user.email;
+                
+                if (user.role === 'admin') {
+                    document.getElementById('admin-menu').style.display = 'block';
+                }
+            }
+        }
+        
+        async function loadAlerts() {
+            try {
+                const data = await apiCall('/api/alerts?limit=50');
+                
+                if (data && data.success) {
+                    displayAlerts(data.data);
+                }
+                
+                // Load unread count
+                const countData = await apiCall('/api/alerts/unread-count');
+                if (countData && countData.success) {
+                    document.getElementById('unread-count').textContent = 
+                        countData.count > 0 ? `(${countData.count} chưa đọc)` : '';
+                }
+            } catch (error) {
+                console.error('Load alerts error:', error);
+            }
+        }
+        
+        function displayAlerts(alerts) {
+            const container = document.getElementById('alerts-list');
+            
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = '<p class="text-center" style="padding: 40px;">🎉 Không có cảnh báo nào</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            alerts.forEach(alert => {
+                const div = document.createElement('div');
+                div.className = `alert-item ${alert.is_read ? 'read' : 'unread'}`;
+                div.style.cursor = 'pointer';
+                div.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="alert-message">${alert.message}</div>
+                        <div style="text-align: right;">
+                            <div class="alert-time">${formatTime(alert.created_at)}</div>
+                            ${!alert.is_read ? '<span class="badge badge-admin">Mới</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                div.onclick = () => markRead(alert.id);
+                container.appendChild(div);
+            });
+        }
+        
+        async function markRead(alertId) {
+            await apiCall(`/api/alerts/${alertId}/read`, 'PUT');
+            loadAlerts();
+        }
+        
+        function formatTime(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleString('vi-VN');
+        }
+    </script>
+</body>
+</html>
