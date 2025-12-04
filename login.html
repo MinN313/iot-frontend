@@ -3,51 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - IoT Platform</title>
+    <title>Đăng nhập - IoT</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dark-theme">
     <div class="auth-container">
         <div class="auth-box">
-            <!-- Logo -->
             <div class="auth-logo">
                 <h1>🏠 IoT Platform</h1>
-                <p>Hệ thống giám sát & điều khiển thông minh</p>
+                <p>Đăng nhập để tiếp tục</p>
             </div>
             
-            <!-- Messages -->
             <div id="error-message" class="error-message"></div>
-            <div id="success-message" class="success-message"></div>
             
-            <!-- Form -->
             <form onsubmit="login(event)">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="Nhập email" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="password">Mật khẩu</label>
+                    <label>Mật khẩu</label>
                     <input type="password" id="password" placeholder="Nhập mật khẩu" required>
                 </div>
-                
                 <button type="submit" class="btn btn-primary">Đăng nhập</button>
             </form>
             
-            <!-- Links -->
             <div class="mt-20 text-center">
                 <p><a href="forgot-password.html">Quên mật khẩu?</a></p>
-                <p class="mt-20">Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+                <p style="margin-top:10px">Chưa có tài khoản? <a href="register.html">Đăng ký</a></p>
             </div>
         </div>
     </div>
     
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // Nếu đã đăng nhập, chuyển đến dashboard
-        checkNotAuth();
+        if (localStorage.getItem('token')) window.location.href = 'dashboard.html';
+        
+        async function login(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('theme', data.user.theme || 'dark');
+                    localStorage.setItem('language', data.user.language || 'vi');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showError(data.error || 'Đăng nhập thất bại!');
+                }
+            } catch (e) {
+                showError('Không thể kết nối server!');
+            }
+        }
     </script>
 </body>
 </html>

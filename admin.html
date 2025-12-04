@@ -3,70 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - IoT Platform</title>
+    <title>Admin - IoT</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dark-theme">
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <nav class="sidebar">
-            <div class="sidebar-logo">
-                <h2>🏠 IoT</h2>
-            </div>
-            
+            <div class="sidebar-logo"><h2>🏠 IoT</h2></div>
             <ul class="sidebar-menu">
-                <li>
-                    <a href="dashboard.html">
-                        <span class="icon">📊</span>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="slots.html">
-                        <span class="icon">📱</span>
-                        <span>Quản lý Slots</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="alerts.html">
-                        <span class="icon">🔔</span>
-                        <span>Cảnh báo</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin.html" class="active">
-                        <span class="icon">👑</span>
-                        <span>Admin</span>
-                    </a>
-                </li>
+                <li><a href="dashboard.html"><span class="icon">📊</span><span>Dashboard</span></a></li>
+                <li><a href="slots.html"><span class="icon">📱</span><span>Quản lý Slots</span></a></li>
+                <li><a href="admin.html" class="active"><span class="icon">👑</span><span>Admin</span></a></li>
+                <li><a href="settings.html"><span class="icon">⚙️</span><span>Cài đặt</span></a></li>
             </ul>
         </nav>
         
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
-                <div class="header-left">
-                    <h1>👑 Admin</h1>
-                    <span id="reset-badge" style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px; display: none;">0 yêu cầu reset</span>
-                </div>
-                <div class="header-right">
-                    <div class="user-info">
-                        <div class="user-name" id="user-name">Admin</div>
-                    </div>
-                    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
-                </div>
+                <h1>👑 Quản lý Users</h1>
+                <button class="btn-logout" onclick="logout()">Đăng xuất</button>
             </header>
             
-            <!-- Tabs -->
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="showTab('users')" id="tab-users">👥 Quản lý Users</button>
-                <button class="btn btn-secondary" onclick="showTab('resets')" id="tab-resets">🔑 Yêu cầu Reset (<span id="reset-count">0</span>)</button>
-            </div>
-            
-            <!-- Users Table -->
-            <div class="table-container" id="users-section">
-                <h3 style="margin-bottom: 15px;">👥 Danh sách Users</h3>
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -79,312 +37,79 @@
                         </tr>
                     </thead>
                     <tbody id="users-tbody">
-                        <tr>
-                            <td colspan="6" class="text-center">Đang tải...</td>
-                        </tr>
+                        <tr><td colspan="6" class="text-center">Đang tải...</td></tr>
                     </tbody>
                 </table>
             </div>
             
-            <!-- Reset Requests Table -->
-            <div class="table-container" id="resets-section" style="display: none;">
-                <h3 style="margin-bottom: 15px;">🔑 Yêu cầu Reset Mật khẩu</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Email</th>
-                            <th>Tên</th>
-                            <th>Trạng thái</th>
-                            <th>Thời gian</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resets-tbody">
-                        <tr>
-                            <td colspan="6" class="text-center">Đang tải...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Hướng dẫn -->
-            <div class="section mt-20">
-                <h2 class="section-title">📖 Phân quyền</h2>
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
-                    <p><strong>3 loại Role:</strong></p>
-                    <ul style="margin: 10px 0 10px 20px;">
-                        <li><span class="badge badge-admin">ADMIN</span> - Toàn quyền: Xem, Điều khiển, Quản lý Users, Quản lý Slots</li>
-                        <li><span class="badge badge-operator">OPERATOR</span> - Vận hành: Xem, Điều khiển thiết bị</li>
-                        <li><span class="badge badge-user">USER</span> - Người dùng: Chỉ xem dữ liệu</li>
-                    </ul>
-                </div>
+            <div class="settings-section mt-20">
+                <h3>📖 Phân quyền</h3>
+                <p><span class="badge badge-admin">ADMIN</span> - Toàn quyền: Quản lý slots, users, điều khiển</p>
+                <p><span class="badge badge-operator">OPERATOR</span> - Vận hành: Xem dữ liệu, điều khiển thiết bị</p>
+                <p><span class="badge badge-user">USER</span> - Chỉ xem dữ liệu</p>
             </div>
         </main>
     </div>
     
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // ==================== KHỞI TẠO ====================
         document.addEventListener('DOMContentLoaded', function() {
             if (!checkAuth()) return;
-            
-            // Kiểm tra quyền admin
-            if (!isAdmin()) {
-                alert('Bạn không có quyền truy cập trang này!');
-                window.location.href = 'dashboard.html';
-                return;
-            }
-            
-            displayUserInfo();
+            if (!isAdmin()) { window.location.href = 'dashboard.html'; return; }
+            initSettings();
             loadUsers();
-            loadResetRequests();
         });
         
-        function displayUserInfo() {
-            const user = getCurrentUser();
-            if (user) {
-                document.getElementById('user-name').textContent = user.name || user.email;
-            }
-        }
-        
-        // ==================== TABS ====================
-        function showTab(tab) {
-            if (tab === 'users') {
-                document.getElementById('users-section').style.display = 'block';
-                document.getElementById('resets-section').style.display = 'none';
-                document.getElementById('tab-users').className = 'btn btn-primary';
-                document.getElementById('tab-resets').className = 'btn btn-secondary';
-            } else {
-                document.getElementById('users-section').style.display = 'none';
-                document.getElementById('resets-section').style.display = 'block';
-                document.getElementById('tab-users').className = 'btn btn-secondary';
-                document.getElementById('tab-resets').className = 'btn btn-primary';
-                loadResetRequests();
-            }
-        }
-        
-        // ==================== LOAD USERS ====================
         async function loadUsers() {
-            try {
-                const data = await apiCall('/api/admin/users');
-                
-                if (data && data.success) {
-                    displayUsers(data.data);
-                } else {
-                    showError(data?.error || 'Không thể tải danh sách users!');
-                }
-            } catch (error) {
-                console.error('Load users error:', error);
-                showError('Lỗi kết nối server!');
-            }
+            const data = await apiCall('/api/admin/users');
+            if (data && data.success) displayUsers(data.data);
         }
         
         function displayUsers(users) {
             const tbody = document.getElementById('users-tbody');
-            
             if (!users || users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có user nào</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có user</td></tr>';
                 return;
             }
             
-            tbody.innerHTML = '';
-            
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${user.id}</td>
-                    <td>${user.email}</td>
-                    <td>${user.name || '-'}</td>
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.email}</td>
+                    <td>${u.name || '-'}</td>
                     <td>
-                        <select onchange="changeRole(${user.id}, this.value)" ${user.email === 'admin@admin.com' ? 'disabled' : ''}>
-                            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
-                            <option value="operator" ${user.role === 'operator' ? 'selected' : ''}>Operator</option>
-                            <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
+                        <select onchange="changeRole(${u.id}, this.value)" ${u.email === 'admin@admin.com' ? 'disabled' : ''}>
+                            <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            <option value="operator" ${u.role === 'operator' ? 'selected' : ''}>Operator</option>
+                            <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
                         </select>
                     </td>
-                    <td>${new Date(user.created_at).toLocaleDateString('vi-VN')}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString('vi-VN')}</td>
                     <td>
-                        <button class="btn btn-sm btn-edit" onclick="resetUserPassword(${user.id})">🔑 Reset MK</button>
-                        ${user.email !== 'admin@admin.com' ? `
-                            <button class="btn btn-sm btn-delete" onclick="deleteUser(${user.id})">🗑️ Xóa</button>
-                        ` : ''}
+                        <button class="btn btn-sm btn-edit" onclick="resetPw(${u.id})">🔑 Reset</button>
+                        ${u.email !== 'admin@admin.com' ? `<button class="btn btn-sm btn-delete" onclick="deleteUser(${u.id})">🗑️</button>` : ''}
                     </td>
-                `;
-                tbody.appendChild(tr);
-            });
+                </tr>
+            `).join('');
         }
         
-        // ==================== CHANGE ROLE ====================
-        async function changeRole(userId, newRole) {
-            try {
-                const data = await apiCall(`/api/admin/users/${userId}/role`, 'PUT', { role: newRole });
-                
-                if (data && data.success) {
-                    showSuccess('Đã đổi role!');
-                } else {
-                    showError(data?.error || 'Không thể đổi role!');
-                    loadUsers();
-                }
-            } catch (error) {
-                showError('Lỗi kết nối!');
-                loadUsers();
-            }
+        async function changeRole(uid, role) {
+            const res = await apiCall(`/api/admin/users/${uid}/role`, 'PUT', { role });
+            if (res && res.success) showSuccess('Đã đổi role!');
         }
         
-        // ==================== RESET PASSWORD ====================
-        async function resetUserPassword(userId) {
-            const newPassword = prompt('Nhập mật khẩu mới (ít nhất 6 ký tự):', '123456');
-            
-            if (!newPassword) return;
-            
-            if (newPassword.length < 6) {
-                showError('Mật khẩu phải ít nhất 6 ký tự!');
-                return;
-            }
-            
-            try {
-                const data = await apiCall(`/api/admin/users/${userId}/reset-password`, 'POST', { 
-                    new_password: newPassword 
-                });
-                
-                if (data && data.success) {
-                    showSuccess(`Đã reset mật khẩu thành: ${newPassword}`);
-                } else {
-                    showError(data?.error || 'Không thể reset mật khẩu!');
-                }
-            } catch (error) {
-                showError('Lỗi kết nối!');
-            }
+        async function resetPw(uid) {
+            const pw = prompt('Mật khẩu mới:', '123456');
+            if (!pw) return;
+            const res = await apiCall(`/api/admin/users/${uid}/reset-password`, 'POST', { new_password: pw });
+            if (res && res.success) showSuccess('Đã reset: ' + pw);
         }
         
-        // ==================== DELETE USER ====================
-        async function deleteUser(userId) {
-            if (!confirm('Bạn có chắc muốn xóa user này?')) return;
-            
-            try {
-                const data = await apiCall(`/api/admin/users/${userId}`, 'DELETE');
-                
-                if (data && data.success) {
-                    showSuccess('Đã xóa user!');
-                    loadUsers();
-                } else {
-                    showError(data?.error || 'Không thể xóa user!');
-                }
-            } catch (error) {
-                showError('Lỗi kết nối!');
-            }
-        }
-        
-        // ==================== RESET REQUESTS ====================
-        async function loadResetRequests() {
-            try {
-                const data = await apiCall('/api/admin/reset-requests');
-                if (data && data.success) {
-                    displayResetRequests(data.data);
-                }
-                
-                // Load count
-                const countData = await apiCall('/api/admin/reset-requests/count');
-                if (countData && countData.success) {
-                    document.getElementById('reset-count').textContent = countData.count;
-                    const badge = document.getElementById('reset-badge');
-                    if (countData.count > 0) {
-                        badge.textContent = countData.count + ' yêu cầu mới';
-                        badge.style.display = 'inline';
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
-            } catch (error) {
-                console.error('Load reset requests error:', error);
-            }
-        }
-        
-        function displayResetRequests(requests) {
-            const tbody = document.getElementById('resets-tbody');
-            
-            if (!requests || requests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có yêu cầu nào</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            
-            requests.forEach(req => {
-                const tr = document.createElement('tr');
-                const isPending = req.status === 'pending';
-                tr.innerHTML = `
-                    <td>${req.id}</td>
-                    <td>${req.email}</td>
-                    <td>${req.user_name || '-'}</td>
-                    <td>
-                        <span class="badge ${isPending ? 'badge-admin' : 'badge-user'}">
-                            ${isPending ? '⏳ Chờ xử lý' : '✅ Đã xử lý'}
-                        </span>
-                    </td>
-                    <td>${new Date(req.created_at).toLocaleString('vi-VN')}</td>
-                    <td>
-                        ${isPending ? `
-                            <button class="btn btn-sm btn-edit" onclick="handleResetRequest(${req.id}, '${req.email}')">
-                                🔑 Reset MK
-                            </button>
-                        ` : ''}
-                        <button class="btn btn-sm btn-delete" onclick="deleteResetRequest(${req.id})">
-                            🗑️ Xóa
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        async function handleResetRequest(requestId, email) {
-            // Nhập mật khẩu mới
-            const newPassword = prompt('Nhập mật khẩu mới cho ' + email + ':', '123456');
-            if (!newPassword) return;
-            
-            // Lấy user ID từ email
-            const usersData = await apiCall('/api/admin/users');
-            if (!usersData || !usersData.success) return;
-            
-            const user = usersData.data.find(u => u.email === email);
-            if (!user) {
-                showError('Không tìm thấy user!');
-                return;
-            }
-            
-            // Reset password
-            const resetData = await apiCall(`/api/admin/users/${user.id}/reset-password`, 'POST', {
-                new_password: newPassword
-            });
-            
-            if (resetData && resetData.success) {
-                // Đánh dấu đã xử lý
-                await apiCall(`/api/admin/reset-requests/${requestId}/complete`, 'POST');
-                showSuccess(`Đã reset mật khẩu cho ${email} thành: ${newPassword}`);
-                loadResetRequests();
-            } else {
-                showError('Không thể reset mật khẩu!');
-            }
-        }
-        
-        async function deleteResetRequest(requestId) {
-            if (!confirm('Xóa yêu cầu này?')) return;
-            
-            await apiCall(`/api/admin/reset-requests/${requestId}`, 'DELETE');
-            loadResetRequests();
-        }
-        
-        // ==================== HELPERS ====================
-        function showError(message) {
-            alert('❌ ' + message);
-        }
-        
-        function showSuccess(message) {
-            alert('✅ ' + message);
+        async function deleteUser(uid) {
+            if (!confirm('Xóa user này?')) return;
+            const res = await apiCall(`/api/admin/users/${uid}`, 'DELETE');
+            if (res && res.success) { showSuccess('Đã xóa!'); loadUsers(); }
         }
     </script>
 </body>

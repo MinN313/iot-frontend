@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt - IoT</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-logo"><h2>🏠 IoT</h2></div>
+            <ul class="sidebar-menu" id="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span><span data-lang="dashboard">Dashboard</span></a></li>
+                <li id="menu-slots" style="display:none"><a href="slots.html"><span class="icon">📱</span><span data-lang="slots">Quản lý Slots</span></a></li>
+                <li id="menu-admin" style="display:none"><a href="admin.html"><span class="icon">👑</span><span data-lang="admin">Admin</span></a></li>
+                <li><a href="settings.html" class="active"><span class="icon">⚙️</span><span data-lang="settings">Cài đặt</span></a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="header">
+                <h1>⚙️ <span data-lang="settings">Cài đặt</span></h1>
+                <button class="btn-logout" onclick="logout()" data-lang="logout">Đăng xuất</button>
+            </header>
+            
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            
+            <!-- Profile -->
+            <div class="settings-section">
+                <h3>👤 <span data-lang="profile">Hồ sơ</span></h3>
+                <form onsubmit="updateProfile(event)">
+                    <div class="form-group">
+                        <label data-lang="name">Tên</label>
+                        <input type="text" id="profile-name" placeholder="Tên của bạn">
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="email">Email</label>
+                        <input type="email" id="profile-email" disabled>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:auto" data-lang="save">Lưu</button>
+                </form>
+            </div>
+            
+            <!-- Password -->
+            <div class="settings-section">
+                <h3>🔑 <span data-lang="changePassword">Đổi mật khẩu</span></h3>
+                <form onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label data-lang="oldPassword">Mật khẩu cũ</label>
+                        <input type="password" id="old-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="newPassword">Mật khẩu mới</label>
+                        <input type="password" id="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="confirmPassword">Xác nhận</label>
+                        <input type="password" id="confirm-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:auto" data-lang="save">Lưu</button>
+                </form>
+            </div>
+            
+            <!-- Theme -->
+            <div class="settings-section">
+                <h3>🎨 <span data-lang="theme">Giao diện</span></h3>
+                <div class="settings-row">
+                    <span class="settings-label" data-lang="theme">Chế độ</span>
+                    <div class="settings-value">
+                        <button class="theme-btn" id="theme-dark" onclick="setTheme('dark')">🌙 <span data-lang="dark">Tối</span></button>
+                        <button class="theme-btn" id="theme-light" onclick="setTheme('light')">☀️ <span data-lang="light">Sáng</span></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Language -->
+            <div class="settings-section">
+                <h3>🌐 <span data-lang="language">Ngôn ngữ</span></h3>
+                <div class="settings-row">
+                    <span class="settings-label" data-lang="language">Ngôn ngữ</span>
+                    <div class="settings-value">
+                        <button class="lang-btn" id="lang-vi" onclick="setLanguage('vi')">🇻🇳 Tiếng Việt</button>
+                        <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">🇺🇸 English</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            initSettings();
+            loadProfile();
+            updateThemeButtons();
+            updateLangButtons();
+            
+            // Menu theo phân quyền
+            const user = getCurrentUser();
+            if (user && user.role === 'admin') {
+                document.getElementById('menu-slots').style.display = 'block';
+                document.getElementById('menu-admin').style.display = 'block';
+            }
+        });
+        
+        async function loadProfile() {
+            const data = await apiCall('/api/user/profile');
+            if (data && data.success) {
+                document.getElementById('profile-name').value = data.data.name || '';
+                document.getElementById('profile-email').value = data.data.email || '';
+            }
+        }
+        
+        async function updateProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('profile-name').value.trim();
+            const theme = localStorage.getItem('theme') || 'dark';
+            const language = localStorage.getItem('language') || 'vi';
+            
+            const res = await apiCall('/api/user/profile', 'PUT', { name, theme, language });
+            if (res && res.success) {
+                const user = getCurrentUser();
+                user.name = name;
+                localStorage.setItem('user', JSON.stringify(user));
+                showSuccess('Đã cập nhật!');
+            } else {
+                showError('Lỗi!');
+            }
+        }
+        
+        async function changePassword(e) {
+            e.preventDefault();
+            const oldPw = document.getElementById('old-password').value;
+            const newPw = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            
+            if (newPw.length < 6) { showError('Mật khẩu mới ít nhất 6 ký tự!'); return; }
+            if (newPw !== confirm) { showError('Mật khẩu không khớp!'); return; }
+            
+            const res = await apiCall('/api/user/password', 'PUT', { old_password: oldPw, new_password: newPw });
+            if (res && res.success) {
+                showSuccess('Đổi mật khẩu thành công!');
+                document.getElementById('old-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+            } else {
+                showError(res?.error || 'Lỗi!');
+            }
+        }
+        
+        function setTheme(theme) {
+            localStorage.setItem('theme', theme);
+            applyTheme();
+            updateThemeButtons();
+            // Save to server
+            apiCall('/api/user/profile', 'PUT', { theme });
+        }
+        
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            updateTexts();
+            updateLangButtons();
+            // Save to server
+            apiCall('/api/user/profile', 'PUT', { language: lang });
+        }
+        
+        function updateThemeButtons() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.getElementById('theme-dark').classList.toggle('active', theme === 'dark');
+            document.getElementById('theme-light').classList.toggle('active', theme === 'light');
+        }
+        
+        function updateLangButtons() {
+            const lang = localStorage.getItem('language') || 'vi';
+            document.getElementById('lang-vi').classList.toggle('active', lang === 'vi');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+        }
+    </script>
+</body>
+</html>

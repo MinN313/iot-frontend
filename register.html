@@ -3,59 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký - IoT Platform</title>
+    <title>Đăng ký - IoT</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dark-theme">
     <div class="auth-container">
         <div class="auth-box">
-            <!-- Logo -->
             <div class="auth-logo">
                 <h1>🏠 IoT Platform</h1>
                 <p>Tạo tài khoản mới</p>
             </div>
             
-            <!-- Messages -->
             <div id="error-message" class="error-message"></div>
             <div id="success-message" class="success-message"></div>
             
-            <!-- Form -->
             <form onsubmit="register(event)">
                 <div class="form-group">
-                    <label for="name">Họ và tên</label>
-                    <input type="text" id="name" placeholder="Nhập họ tên của bạn" required>
+                    <label>Tên</label>
+                    <input type="text" id="name" placeholder="Nhập tên của bạn" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="Nhập email" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="password">Mật khẩu</label>
+                    <label>Mật khẩu</label>
                     <input type="password" id="password" placeholder="Ít nhất 6 ký tự" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="confirm-password">Xác nhận mật khẩu</label>
+                    <label>Xác nhận mật khẩu</label>
                     <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu" required>
                 </div>
-                
                 <button type="submit" class="btn btn-primary">Đăng ký</button>
             </form>
             
-            <!-- Links -->
             <div class="mt-20 text-center">
                 <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
             </div>
         </div>
     </div>
     
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        checkNotAuth();
+        async function register(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            
+            if (password.length < 6) { showError('Mật khẩu ít nhất 6 ký tự!'); return; }
+            if (password !== confirm) { showError('Mật khẩu không khớp!'); return; }
+            
+            try {
+                const res = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showSuccess('Đăng ký thành công!');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } else {
+                    showError(data.error || 'Đăng ký thất bại!');
+                }
+            } catch (e) {
+                showError('Không thể kết nối server!');
+            }
+        }
     </script>
 </body>
 </html>

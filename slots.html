@@ -3,62 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Slots - IoT Platform</title>
+    <title>Quản lý Slots - IoT</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dark-theme">
     <div class="dashboard-container">
-        <!-- Sidebar -->
         <nav class="sidebar">
-            <div class="sidebar-logo">
-                <h2>🏠 IoT</h2>
-            </div>
-            
+            <div class="sidebar-logo"><h2>🏠 IoT</h2></div>
             <ul class="sidebar-menu">
-                <li>
-                    <a href="dashboard.html">
-                        <span class="icon">📊</span>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="slots.html" class="active">
-                        <span class="icon">📱</span>
-                        <span>Quản lý Slots</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="alerts.html">
-                        <span class="icon">🔔</span>
-                        <span>Cảnh báo</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="admin.html">
-                        <span class="icon">👑</span>
-                        <span>Admin</span>
-                    </a>
-                </li>
+                <li><a href="dashboard.html"><span class="icon">📊</span><span>Dashboard</span></a></li>
+                <li><a href="slots.html" class="active"><span class="icon">📱</span><span>Quản lý Slots</span></a></li>
+                <li id="menu-admin"><a href="admin.html"><span class="icon">👑</span><span>Admin</span></a></li>
+                <li><a href="settings.html"><span class="icon">⚙️</span><span>Cài đặt</span></a></li>
             </ul>
         </nav>
         
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
-                <div class="header-left">
-                    <h1>📱 Quản lý Slots</h1>
-                </div>
+                <h1>📱 Quản lý Slots</h1>
                 <div class="header-right">
                     <button class="btn btn-primary" onclick="showAddForm()">+ Thêm Slot</button>
-                    <div class="user-info">
-                        <div class="user-name" id="user-name">User</div>
-                    </div>
                     <button class="btn-logout" onclick="logout()">Đăng xuất</button>
                 </div>
             </header>
             
-            <!-- Table -->
             <div class="table-container">
                 <table>
                     <thead>
@@ -68,108 +36,77 @@
                             <th>Loại</th>
                             <th>Đơn vị</th>
                             <th>Vị trí</th>
-                            <th>Ngưỡng</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody id="slots-tbody">
-                        <tr>
-                            <td colspan="7" class="text-center">Đang tải...</td>
-                        </tr>
+                        <tr><td colspan="6" class="text-center">Đang tải...</td></tr>
                     </tbody>
                 </table>
             </div>
             
             <!-- Hướng dẫn -->
-            <div class="section mt-20">
-                <h2 class="section-title">📖 Hướng dẫn</h2>
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
-                    <p><strong>4 loại Slot:</strong></p>
-                    <ul style="margin: 10px 0 10px 20px;">
-                        <li><span class="badge badge-value">VALUE</span> - Giá trị số (nhiệt độ, độ ẩm...)</li>
-                        <li><span class="badge badge-status">STATUS</span> - Trạng thái BẬT/TẮT (cảm biến chuyển động, cửa...)</li>
-                        <li><span class="badge badge-control">CONTROL</span> - Điều khiển BẬT/TẮT (đèn, quạt, relay...)</li>
-                        <li><span class="badge badge-camera">CAMERA</span> - Video từ ESP32-CAM</li>
-                    </ul>
-                    <p><strong>ESP32 gửi dữ liệu:</strong></p>
-                    <code style="display: block; background: #000; padding: 10px; margin-top: 10px; border-radius: 5px;">
-                        { "slot": 1, "value": 28.5 }
-                    </code>
-                </div>
+            <div class="settings-section mt-20">
+                <h3>📖 Các loại Slot</h3>
+                <p><span class="badge badge-value">VALUE</span> - Giá trị số (nhiệt độ, độ ẩm...)</p>
+                <p><span class="badge badge-status">STATUS</span> - Trạng thái ON/OFF (cảm biến PIR, cửa...)</p>
+                <p><span class="badge badge-control">CONTROL</span> - Điều khiển ON/OFF (đèn, quạt...)</p>
+                <p><span class="badge badge-camera">CAMERA</span> - Camera stream</p>
+                <p><span class="badge badge-chart">CHART</span> - Biểu đồ theo thời gian</p>
             </div>
         </main>
     </div>
     
-    <!-- Modal Form -->
+    <!-- Modal -->
     <div class="modal" id="slot-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="form-title">Thêm Slot mới</h2>
-                <button class="modal-close" onclick="hideForm()">×</button>
+                <h2 id="form-title">Thêm Slot</h2>
+                <button class="modal-close" onclick="hideModal()">&times;</button>
             </div>
-            
-            <form id="slot-form" onsubmit="submitSlotForm(event)">
-                <input type="hidden" id="editing-slot">
-                
+            <form onsubmit="submitSlotForm(event)" id="slot-form">
                 <div class="form-group">
-                    <label for="slot-number">Số Slot *</label>
-                    <select id="slot-number" required>
-                        <option value="">-- Chọn số slot --</option>
-                    </select>
+                    <label>Số Slot</label>
+                    <select id="slot-number" required></select>
                 </div>
-                
                 <div class="form-group">
-                    <label for="slot-name">Tên hiển thị *</label>
-                    <input type="text" id="slot-name" placeholder="VD: Nhiệt độ phòng khách" required>
+                    <label>Tên</label>
+                    <input type="text" id="slot-name" placeholder="VD: Nhiệt độ phòng" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="slot-type">Loại *</label>
-                    <select id="slot-type" required onchange="onTypeChange()">
+                    <label>Loại</label>
+                    <select id="slot-type" onchange="onTypeChange()">
                         <option value="value">📊 Giá trị số (VALUE)</option>
-                        <option value="status">📡 Trạng thái (STATUS)</option>
+                        <option value="status">🔔 Trạng thái (STATUS)</option>
                         <option value="control">💡 Điều khiển (CONTROL)</option>
                         <option value="camera">📷 Camera (CAMERA)</option>
+                        <option value="chart">📈 Biểu đồ (CHART)</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
-                    <label for="slot-icon">Icon (emoji)</label>
-                    <input type="text" id="slot-icon" placeholder="VD: 🌡️ 💧 💡 📷" maxlength="5">
+                    <label>Icon</label>
+                    <input type="text" id="slot-icon" placeholder="🌡️">
                 </div>
-                
                 <div class="form-group" id="unit-group">
-                    <label for="slot-unit">Đơn vị</label>
-                    <input type="text" id="slot-unit" placeholder="VD: °C, %, lux">
+                    <label>Đơn vị</label>
+                    <input type="text" id="slot-unit" placeholder="°C, %, lux...">
                 </div>
-                
                 <div class="form-group">
-                    <label for="slot-location">Vị trí</label>
-                    <input type="text" id="slot-location" placeholder="VD: Phòng khách, Sân vườn">
+                    <label>Vị trí</label>
+                    <input type="text" id="slot-location" placeholder="Phòng khách">
                 </div>
-                
-                <div class="form-group" id="threshold-group">
-                    <label>Ngưỡng cảnh báo</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="slot-threshold-min" placeholder="Min" step="0.1">
-                        <input type="number" id="slot-threshold-max" placeholder="Max" step="0.1">
-                    </div>
+                <div class="form-group" id="stream-group" style="display:none">
+                    <label>Stream URL</label>
+                    <input type="text" id="slot-stream-url" placeholder="http://192.168.1.x:81/stream">
                 </div>
-                
-                <div class="form-group" id="stream-group" style="display: none;">
-                    <label for="slot-stream-url">Stream URL (Local)</label>
-                    <input type="text" id="slot-stream-url" placeholder="http://192.168.1.100:81/stream">
-                </div>
-                
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="hideForm()">Hủy</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">Hủy</button>
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
             </form>
         </div>
     </div>
     
-    <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/slots.js"></script>

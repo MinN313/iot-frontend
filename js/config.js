@@ -1,15 +1,143 @@
-// ============================================================
-// config.js - CẤU HÌNH FRONTEND
-// ============================================================
-// File này chứa URL của Backend API
-// Khi deploy lên Render, đổi API_URL thành URL thật
-// ============================================================
-
-// URL Backend - ĐỔI SAU KHI DEPLOY LÊN RENDER
+// config.js
 const API_URL = 'https://iot-backend-q2vc.onrender.com';
+const REFRESH_INTERVAL = 5000;
+const CAMERA_REFRESH_INTERVAL = 2000;
 
-// Thời gian refresh dữ liệu (milliseconds)
-const REFRESH_INTERVAL = 5000; // 5 giây
+// Đa ngôn ngữ
+const LANG = {
+    vi: {
+        dashboard: 'Dashboard',
+        slots: 'Quản lý Slots',
+        admin: 'Admin',
+        settings: 'Cài đặt',
+        logout: 'Đăng xuất',
+        login: 'Đăng nhập',
+        register: 'Đăng ký',
+        email: 'Email',
+        password: 'Mật khẩu',
+        name: 'Tên',
+        save: 'Lưu',
+        cancel: 'Hủy',
+        delete: 'Xóa',
+        edit: 'Sửa',
+        add: 'Thêm',
+        totalSlots: 'Tổng Slots',
+        cameras: 'Camera',
+        controls: 'Điều khiển',
+        charts: 'Biểu đồ',
+        value: 'Giá trị số',
+        status: 'Trạng thái',
+        control: 'Điều khiển',
+        camera: 'Camera',
+        chart: 'Biểu đồ',
+        on: 'BẬT',
+        off: 'TẮT',
+        connected: 'Đã kết nối',
+        disconnected: 'Mất kết nối',
+        forgotPassword: 'Quên mật khẩu?',
+        noAccount: 'Chưa có tài khoản?',
+        hasAccount: 'Đã có tài khoản?',
+        profile: 'Hồ sơ',
+        changePassword: 'Đổi mật khẩu',
+        theme: 'Giao diện',
+        language: 'Ngôn ngữ',
+        dark: 'Tối',
+        light: 'Sáng',
+        vietnamese: 'Tiếng Việt',
+        english: 'English',
+        oldPassword: 'Mật khẩu cũ',
+        newPassword: 'Mật khẩu mới',
+        confirmPassword: 'Xác nhận mật khẩu',
+        slotNumber: 'Số Slot',
+        slotName: 'Tên Slot',
+        slotType: 'Loại',
+        unit: 'Đơn vị',
+        location: 'Vị trí',
+        icon: 'Icon',
+        streamUrl: 'URL Stream',
+        noDevice: 'Chưa có thiết bị',
+        addDevice: 'Thêm thiết bị',
+        role: 'Vai trò',
+        createdAt: 'Ngày tạo',
+        actions: 'Hành động',
+        resetPassword: 'Reset MK',
+        mqtt: 'MQTT',
+        justNow: 'Vừa xong',
+        minutesAgo: 'phút trước',
+        hoursAgo: 'giờ trước',
+        users: 'Người dùng'
+    },
+    en: {
+        dashboard: 'Dashboard',
+        slots: 'Manage Slots',
+        admin: 'Admin',
+        settings: 'Settings',
+        logout: 'Logout',
+        login: 'Login',
+        register: 'Register',
+        email: 'Email',
+        password: 'Password',
+        name: 'Name',
+        save: 'Save',
+        cancel: 'Cancel',
+        delete: 'Delete',
+        edit: 'Edit',
+        add: 'Add',
+        totalSlots: 'Total Slots',
+        cameras: 'Cameras',
+        controls: 'Controls',
+        charts: 'Charts',
+        value: 'Value',
+        status: 'Status',
+        control: 'Control',
+        camera: 'Camera',
+        chart: 'Chart',
+        on: 'ON',
+        off: 'OFF',
+        connected: 'Connected',
+        disconnected: 'Disconnected',
+        forgotPassword: 'Forgot password?',
+        noAccount: "Don't have account?",
+        hasAccount: 'Already have account?',
+        profile: 'Profile',
+        changePassword: 'Change Password',
+        theme: 'Theme',
+        language: 'Language',
+        dark: 'Dark',
+        light: 'Light',
+        vietnamese: 'Vietnamese',
+        english: 'English',
+        oldPassword: 'Old Password',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        slotNumber: 'Slot Number',
+        slotName: 'Slot Name',
+        slotType: 'Type',
+        unit: 'Unit',
+        location: 'Location',
+        icon: 'Icon',
+        streamUrl: 'Stream URL',
+        noDevice: 'No device configured',
+        addDevice: 'Add device',
+        role: 'Role',
+        createdAt: 'Created',
+        actions: 'Actions',
+        resetPassword: 'Reset PW',
+        mqtt: 'MQTT',
+        justNow: 'Just now',
+        minutesAgo: 'min ago',
+        hoursAgo: 'hours ago',
+        users: 'Users'
+    }
+};
 
-// Thời gian refresh camera (milliseconds)  
-const CAMERA_REFRESH_INTERVAL = 2000; // 2 giây
+function t(key) {
+    const lang = localStorage.getItem('language') || 'vi';
+    return LANG[lang][key] || key;
+}
+
+function updateTexts() {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+        el.textContent = t(el.dataset.lang);
+    });
+}
